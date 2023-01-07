@@ -80,7 +80,7 @@ begin
         end if;
     end process;
     
-    izhodi: process(current_state, tx_start, sclk_gen_ce)
+    izhodi: process(current_state, tx_byte, tx_start, sclk_gen_ce)
     begin
         case current_state is
             when spi_idle =>
@@ -93,9 +93,12 @@ begin
 
                 -- Start transmition
                 if tx_start = '1' then
+                    i_tx_byte <= tx_byte;
+                    
                     i_cs <= '0';
                     i_sclk <= '0';
-                    i_tx_byte <= tx_byte;
+                    i_mosi <= tx_byte(7);
+                    
                     next_state <= spi_tx;
                 end if;
                 
