@@ -20,12 +20,10 @@ end top;
 architecture Behavioral of top is
     --konstante
     constant prescaler_size : integer := 27;
-    constant frequency : integer := 100;
     
     --komponente
     component prescaler is
-        generic (n : integer;
-                 frequency : integer);
+        generic (n : integer := 27);
         Port ( clk : in STD_LOGIC;
                reset : in STD_LOGIC;
                clock_enable : out STD_LOGIC);
@@ -75,9 +73,7 @@ architecture Behavioral of top is
     
 begin
     presc_inst: prescaler
-        generic map (
-                  n => prescaler_size,
-                  frequency => frequency)
+        generic map (n => prescaler_size)
         port map (clk => CLK100MHZ,
                   reset => not CPU_RESETN,
                   clock_enable    => clock_enable);
@@ -174,5 +170,7 @@ begin
     VGA_B <= "0000" when labirint='1' 
                     else "1111" when ball = '1'
                     else "0000";
+    
+    
 
 end Behavioral;
