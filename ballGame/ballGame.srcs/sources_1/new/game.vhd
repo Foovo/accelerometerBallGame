@@ -24,12 +24,11 @@ architecture Behavioral of game is
     constant yRange : integer := 479;
 
     --start position (10,10)
-    --0000001010
-    signal x : unsigned(9 downto 0) := "0111010110";
-    signal y : unsigned(9 downto 0) := "0111000010";
+    signal x : unsigned(9 downto 0) := "0000001010";
+    signal y : unsigned(9 downto 0) := "0000001010";
     
-    signal oldX : unsigned(9 downto 0) := "0111010110";
-    signal oldY : unsigned(9 downto 0) := "0111000010";
+    signal oldX : unsigned(9 downto 0) := "0000001010";
+    signal oldY : unsigned(9 downto 0) := "0000001010";
     
     signal u : std_logic := '0';
     signal d : std_logic := '0';
@@ -50,8 +49,8 @@ begin
             
             -- Sinhroni reset
             if reset = '1' then
-                x <= "0111010110";
-                y <= "0111000010";
+                x <= "0000001010";
+                y <= "0000001010";
                 u <= '0';
                 d <= '0';
                 l <= '0';
