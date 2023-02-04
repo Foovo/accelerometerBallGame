@@ -13,6 +13,8 @@ entity game is
            down : in STD_LOGIC;
            left : in STD_LOGIC;
            right : in STD_LOGIC;
+           finish : in STD_LOGIC; --game is over
+           pause : in STD_LOGIC;  --pause game
            coordX : out unsigned(9 downto 0);
            coordY : out unsigned(9 downto 0));
 end game;
@@ -22,11 +24,12 @@ architecture Behavioral of game is
     constant yRange : integer := 479;
 
     --start position (10,10)
-    signal x : unsigned(9 downto 0) := "0000001010";
-    signal y : unsigned(9 downto 0) := "0000001010";
+    --0000001010
+    signal x : unsigned(9 downto 0) := "0111010110";
+    signal y : unsigned(9 downto 0) := "0111000010";
     
-    signal oldX : unsigned(9 downto 0) := "0000001010";
-    signal oldY : unsigned(9 downto 0) := "0000001010";
+    signal oldX : unsigned(9 downto 0) := "0111010110";
+    signal oldY : unsigned(9 downto 0) := "0111000010";
     
     signal u : std_logic := '0';
     signal d : std_logic := '0';
@@ -36,6 +39,7 @@ architecture Behavioral of game is
     signal ballSize : integer := 4;
     
 begin
+
     
     logic: process (clk)
     begin
@@ -46,8 +50,8 @@ begin
             
             -- Sinhroni reset
             if reset = '1' then
-                x <= "0000001010";
-                y <= "0000001010";
+                x <= "0111010110";
+                y <= "0111000010";
                 u <= '0';
                 d <= '0';
                 l <= '0';
@@ -57,7 +61,7 @@ begin
                 oldY <= y;
             
             -- move to new position
-            elsif ce = '1' then
+            elsif ce = '1' and finish = '0' and pause = '1' then
                 
                 if up = '1' and y > 4 + ballSize then
                     u <= '1';

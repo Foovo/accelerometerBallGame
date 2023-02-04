@@ -4,14 +4,16 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-
 entity display is
-    Port ( display_h : in STD_LOGIC;
+    Port ( reset : in STD_LOGIC;
+           display_h : in STD_LOGIC;
            display_v : in STD_LOGIC;
            row : in UNSIGNED(9 downto 0);
            column : in UNSIGNED(9 downto 0);
            ballX : in UNSIGNED(9 downto 0);
            ballY : in UNSIGNED(9 downto 0);
+           finish : in STD_LOGIC;     --out of time
+           endOfGame : out STD_LOGIC; --won the game
            VGA_R : out STD_LOGIC_VECTOR (3 downto 0);
            VGA_G : out STD_LOGIC_VECTOR (3 downto 0);
            VGA_B : out STD_LOGIC_VECTOR (3 downto 0));
@@ -24,16 +26,21 @@ architecture Behavioral of display is
     signal cilj : std_logic;
     
     signal ball: std_logic;
+  
+    signal sign : std_logic := '0';  
+    signal win : std_logic := '0'; 
     
-    signal finish : std_logic := '0'; 
-    signal sign : std_logic;
+begin 
     
-begin
-    --MIGHT HAVE TO ADD RESET FOR FINISH SIGNAL
     maze: process (row, column)
     begin
         display <= display_h and display_v;
-        if finish = '0' then
+        endOfGame <= win;
+        
+        if reset = '1' then
+            win <= '0';
+                    
+        elsif win = '0' then
             -- labirint
             if display='1' and (row=4 or row=479 or column=1 or column=639 -- border
                 or (column > 420 and row < 80) or (((column > 420 and column < 500) or column > 600) and row < 230)
@@ -114,9 +121,8 @@ begin
                 VGA_B <= "0000";
             end if;
             
-            if (((ballY > 440 and ballY < 445) or (ballY > 469 and ballY < 474)) and ballX > 605 and ballX < 634) or
-            (ballY >= 440 and ballY <= 469 and ((ballX > 605 and ballX < 610) or (ballX > 629 and ballX <= 634))) then
-                finish <= '1';
+            if ballY > 450 and ballY < 469 and ballX > 610 and ballX < 629 then
+                win <= '1';
             end if;
             
         --finish screen - YOU WIN!
