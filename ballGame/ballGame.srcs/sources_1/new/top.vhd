@@ -7,10 +7,6 @@ entity top is
     Port ( CLK100MHZ : in STD_LOGIC;
            CPU_RESETN : in STD_LOGIC;
            SW0 : in STD_LOGIC;
-           up : in STD_LOGIC;   --to nadomesti accelometer module
-           down : in STD_LOGIC;
-           left : in STD_LOGIC;
-           right : in STD_LOGIC;
            
            AN : out STD_LOGIC_VECTOR(3 downto 0);
            C : out STD_LOGIC_VECTOR(6 downto 0);
@@ -18,7 +14,12 @@ entity top is
            VGA_VS : out STD_LOGIC;
            VGA_R : out STD_LOGIC_VECTOR (3 downto 0);
            VGA_G : out STD_LOGIC_VECTOR (3 downto 0);
-           VGA_B : out STD_LOGIC_VECTOR (3 downto 0));
+           VGA_B : out STD_LOGIC_VECTOR (3 downto 0);
+           ACL_MISO: in std_logic;
+           ACL_MOSI: out std_logic;
+           ACL_SCLK: out std_logic;
+           ACL_CSN: out std_logic
+       );
 end top;
 
 architecture Behavioral of top is
@@ -140,7 +141,22 @@ architecture Behavioral of top is
     signal number: std_logic_vector(3 downto 0);
     signal finish, endOfGame : std_logic;
     
+    -- Player
+    signal up, down, left, right : std_logic;
 begin     
+    player_controler_inst : entity work.player_control(Behavioral)
+        Port map (
+            clk => CLK100MHZ,
+            reset => not CPU_RESETN,
+            miso => ACL_MISO,
+            sclk => ACL_SCLK,
+            cs => ACL_CSN,
+            mosi => ACL_MOSI, 
+            up => up,
+            down => down,
+            left => left,
+            right => right
+        );
                   
     presc_inst: prescaler
         generic map (
