@@ -40,7 +40,7 @@ begin
         if reset = '1' then
             win <= '0';
                     
-        elsif win = '0' then
+        elsif win = '0' and finish = '0' then
             -- labirint
             if display='1' and (row=4 or row=479 or column=1 or column=639 -- border
                 or (column > 420 and row < 80) or (((column > 420 and column < 500) or column > 600) and row < 230)
@@ -126,7 +126,7 @@ begin
             end if;
             
         --finish screen - YOU WIN!
-        else
+        elsif win = '1' then
             if display = '1' and (
             --Y and top O,U,W,I,N,!
             (row > 140 and row <= 153 and ((column > 88 and column < 109) or (column > 123 and column < 144) or (column > 157 and column < 205) or 
@@ -190,7 +190,10 @@ begin
                 VGA_G <= "1111";
                 VGA_B <= "0000";
             end if;
-                                
+        else
+            VGA_R <= "0000";
+            VGA_G <= "0000";
+            VGA_B <= "0000";            
         end if;
     end process;   
 
